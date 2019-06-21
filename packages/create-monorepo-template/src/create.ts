@@ -12,12 +12,12 @@ clearConsole();
 
 const [_firstArg, __secondArg, folderName] = process.argv;
 
-if (!folderName) {
+const startInquirer = () =>
   inquirer
     .prompt({
       type: "input",
       name: "name",
-      message: "Name your monorepo",
+      message: "Name",
       filter: input => kebabCase(input),
       validate: input => {
         if (!input) {
@@ -35,9 +35,22 @@ if (!folderName) {
     .then((answers: any) => answers["name"])
     .then(resolveAppFolder)
     .then(createMonorepo);
+
+if (!folderName) {
+  startInquirer();
 } else {
-  const destinationFolder = path.resolve(process.cwd(), kebabCase(folderName));
-  createMonorepo(destinationFolder);
+  const appName = kebabCase(folderName);
+  if (appAlreadyExists(appName)) {
+    console.log(
+      `An application with name ${chalk.red(
+        kebabCase(appName)
+      )} already exists. Please choose another one.`
+    );
+    startInquirer();
+  } else {
+    const destinationFolder = path.resolve(process.cwd(), appName);
+    createMonorepo(destinationFolder);
+  }
 }
 
 async function createMonorepo(destFolder: string) {

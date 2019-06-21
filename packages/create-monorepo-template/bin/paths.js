@@ -12,7 +12,8 @@ function resolveAppFolder(appName) {
 }
 exports.resolveAppFolder = resolveAppFolder;
 function appAlreadyExists(appName) {
-    var exists = fs_1.default.existsSync(path_1.default.resolve(process.cwd(), appName));
+    var applicationPath = path_1.default.resolve(process.cwd(), appName);
+    var exists = fs_1.default.existsSync(applicationPath);
     return exists;
 }
 exports.appAlreadyExists = appAlreadyExists;

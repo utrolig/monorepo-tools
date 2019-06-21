@@ -9,7 +9,8 @@ export function resolveAppFolder(appName: string) {
 }
 
 export function appAlreadyExists(appName: string) {
-  const exists = fs.existsSync(path.resolve(process.cwd(), appName));
+  const applicationPath = path.resolve(process.cwd(), appName);
+  const exists = fs.existsSync(applicationPath);
   return exists;
 }
 

@@ -49,12 +49,12 @@ var paths_1 = require("./paths");
 var clearConsole = require("react-dev-utils/clearConsole");
 clearConsole();
 var _a = process.argv, _firstArg = _a[0], __secondArg = _a[1], folderName = _a[2];
-if (!folderName) {
-    inquirer_1.default
+var startInquirer = function () {
+    return inquirer_1.default
         .prompt({
         type: "input",
         name: "name",
-        message: "Name your monorepo",
+        message: "Name",
         filter: function (input) { return lodash_kebabcase_1.default(input); },
         validate: function (input) {
             if (!input) {
@@ -69,10 +69,20 @@ if (!folderName) {
         .then(function (answers) { return answers["name"]; })
         .then(paths_1.resolveAppFolder)
         .then(createMonorepo);
+};
+if (!folderName) {
+    startInquirer();
 }
 else {
-    var destinationFolder = path_1.default.resolve(process.cwd(), lodash_kebabcase_1.default(folderName));
-    createMonorepo(destinationFolder);
+    var appName = lodash_kebabcase_1.default(folderName);
+    if (paths_1.appAlreadyExists(appName)) {
+        console.log("An application with name " + chalk_1.default.red(lodash_kebabcase_1.default(appName)) + " already exists. Please choose another one.");
+        startInquirer();
+    }
+    else {
+        var destinationFolder = path_1.default.resolve(process.cwd(), appName);
+        createMonorepo(destinationFolder);
+    }
 }
 function createMonorepo(destFolder) {
     return __awaiter(this, void 0, void 0, function () {
