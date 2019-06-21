@@ -12,6 +12,6 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "publish": "lerna publish"
+    "publish-all": "lerna publish"
   }
 }
