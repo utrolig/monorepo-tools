@@ -1,6 +1,7 @@
 import { Configuration } from "webpack-dev-server";
 
 const config: Configuration = {
+  noInfo: true,
   historyApiFallback: {
     disableDotRule: true
   },
