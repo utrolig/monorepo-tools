@@ -8,10 +8,41 @@ import {
   commonTemplateFolder
 } from "./paths";
 import fs from "fs";
+import spawn from "cross-spawn";
 
 const commonTemplateJson = require(commonTemplateJsonPath);
 
 const ncp = promisify(ncpCb);
+
+export function runCommand(command: string, args: string[], cwd: string) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { stdio: "inherit", cwd });
+    child.on("close", code => {
+      if (code !== 0) {
+        reject({
+          command: `${command} ${args.join(" ")}`
+        });
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
+export async function installDeps(
+  dependencies: {
+    depsToInstall: string[];
+    devDepsToInstall: string[];
+  },
+  destinationFolder: string
+) {
+  const cmd = "yarnpkg";
+  const args = ["add", ...dependencies.depsToInstall];
+  await runCommand(cmd, args, destinationFolder);
+
+  const devArgs = ["add", "--dev", ...dependencies.devDepsToInstall];
+  await runCommand(cmd, devArgs, destinationFolder);
+}
 
 export function copyCommonTemplate(destination: string) {
   const filesToCopy = fs
@@ -21,7 +52,7 @@ export function copyCommonTemplate(destination: string) {
   for (const fileToCopy of filesToCopy) {
     fs.copyFileSync(
       path.resolve(commonTemplateFolder, fileToCopy),
-      path.resolve(destination)
+      path.resolve(destination, fileToCopy)
     );
   }
 }
@@ -69,14 +100,16 @@ export async function copyTemplate(name: string, template: string) {
     createDirectory(destinationFolder);
 
     console.log(`Creating ${chalk.green("package.json")}...`);
-    createPkgJsonAndReturnDependenciesToInstall(
+    const deps = createPkgJsonAndReturnDependenciesToInstall(
       name,
       template,
       destinationFolder
     );
-    copyCommonTemplate(destinationFolder);
     console.log("Copying template to", chalk.green(destinationFolder));
+    copyCommonTemplate(destinationFolder);
     console.log("Done copying.");
+    console.log("Installing dependencies");
+    await installDeps(deps, destinationFolder);
   } catch (err) {
     console.error("Something went wrong while copying the template.");
     throw new Error(err);
