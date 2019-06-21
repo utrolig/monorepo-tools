@@ -6,6 +6,8 @@ import kebabCase from "lodash.kebabcase";
 import { writeFileSync } from "fs";
 import inquirer from "inquirer";
 import { appAlreadyExists, resolveAppFolder } from "./paths";
+import { installDependencies } from "./install";
+import { cleanUp } from "./cleanup";
 const clearConsole = require("react-dev-utils/clearConsole");
 
 clearConsole();
@@ -54,10 +56,20 @@ if (!folderName) {
 }
 
 async function createMonorepo(destFolder: string) {
-  console.log("Creating new monorepo at", chalk.green(destFolder));
-  await copyTemplate(destFolder);
-  const pathToPkgJson = path.resolve(destFolder, "package.json");
-  const pkgJson = require(pathToPkgJson);
-  pkgJson.name = kebabCase(folderName);
-  writeFileSync(pathToPkgJson, JSON.stringify(pkgJson, null, 2));
+  try {
+    console.log("Creating new monorepo at", chalk.green(destFolder));
+    await copyTemplate(destFolder);
+    const pathToPkgJson = path.resolve(destFolder, "package.json");
+    const pkgJson = require(pathToPkgJson);
+    pkgJson.scripts = {
+      new: "create-monorepo-app"
+    };
+    pkgJson.name = kebabCase(folderName);
+    writeFileSync(pathToPkgJson, JSON.stringify(pkgJson, null, 2));
+    installDependencies(destFolder);
+  } catch (err) {
+    console.log("Error while creating monorepo. Cleaning up...");
+    await cleanUp(destFolder);
+    console.error(err);
+  }
 }

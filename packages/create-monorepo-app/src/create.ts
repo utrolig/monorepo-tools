@@ -30,9 +30,13 @@ async function cleanUp(appName: string) {
   }
 }
 
-async function createApplication(appName: string, templateName: string) {
+async function createApplication(
+  appName: string,
+  templateName: string,
+  folder?: string
+) {
   try {
-    await copyTemplate(appName, templateName);
+    await copyTemplate(appName, templateName, folder);
   } catch (err) {
     console.error("Error while creating application");
     throw new Error(err);
@@ -44,7 +48,11 @@ async function createApplication(appName: string, templateName: string) {
   // writeFileSync(pathToPkgJson, JSON.stringify(pkgJson, null, 2));
 }
 
-const start = async (appName: string, templateName: string) => {
+const start = async (
+  appName: string,
+  templateName: string,
+  folder?: string
+) => {
   const appNamePrompt = {
     type: "input",
     name: "name",
@@ -114,7 +122,7 @@ const start = async (appName: string, templateName: string) => {
   );
 
   try {
-    await createApplication(appName, templateName);
+    await createApplication(appName, templateName, folder);
   } catch (err) {
     await cleanUp(appName);
     console.error(err);
@@ -126,10 +134,11 @@ const start = async (appName: string, templateName: string) => {
     .version(pkgJson.version)
     .option("-a, --app [app]", "App Name")
     .option("-t, --template [template]", "Template")
+    .option("-f, --folder [folder]", "Folder")
     .parse(process.argv);
 
   clearConsole();
-  const { app, template } = program;
+  const { app, template, folder } = program;
 
-  await start(app, template);
+  await start(app, template, folder);
 })();

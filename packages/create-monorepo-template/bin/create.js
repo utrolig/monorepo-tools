@@ -46,6 +46,8 @@ var lodash_kebabcase_1 = __importDefault(require("lodash.kebabcase"));
 var fs_1 = require("fs");
 var inquirer_1 = __importDefault(require("inquirer"));
 var paths_1 = require("./paths");
+var install_1 = require("./install");
+var cleanup_1 = require("./cleanup");
 var clearConsole = require("react-dev-utils/clearConsole");
 clearConsole();
 var _a = process.argv, _firstArg = _a[0], __secondArg = _a[1], folderName = _a[2];
@@ -86,19 +88,33 @@ else {
 }
 function createMonorepo(destFolder) {
     return __awaiter(this, void 0, void 0, function () {
-        var pathToPkgJson, pkgJson;
+        var pathToPkgJson, pkgJson, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    _a.trys.push([0, 2, , 4]);
                     console.log("Creating new monorepo at", chalk_1.default.green(destFolder));
                     return [4 /*yield*/, copy_template_1.copyTemplate(destFolder)];
                 case 1:
                     _a.sent();
                     pathToPkgJson = path_1.default.resolve(destFolder, "package.json");
                     pkgJson = require(pathToPkgJson);
+                    pkgJson.scripts = {
+                        new: "create-monorepo-app"
+                    };
                     pkgJson.name = lodash_kebabcase_1.default(folderName);
                     fs_1.writeFileSync(pathToPkgJson, JSON.stringify(pkgJson, null, 2));
-                    return [2 /*return*/];
+                    install_1.installDependencies(destFolder);
+                    return [3 /*break*/, 4];
+                case 2:
+                    err_1 = _a.sent();
+                    console.log("Error while creating monorepo. Cleaning up...");
+                    return [4 /*yield*/, cleanup_1.cleanUp(destFolder)];
+                case 3:
+                    _a.sent();
+                    console.error(err_1);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     });

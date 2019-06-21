@@ -42,10 +42,12 @@ var ncp_1 = require("ncp");
 var util_1 = require("util");
 var paths_1 = require("./paths");
 var chalk_1 = __importDefault(require("chalk"));
+var fs_1 = __importDefault(require("fs"));
+var path_1 = __importDefault(require("path"));
 var ncp = util_1.promisify(ncp_1.ncp);
 function copyTemplate(destination) {
     return __awaiter(this, void 0, void 0, function () {
-        var err_1;
+        var newFolderPath, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -54,6 +56,8 @@ function copyTemplate(destination) {
                     return [4 /*yield*/, ncp(paths_1.paths.templateFolder, destination)];
                 case 1:
                     _a.sent();
+                    newFolderPath = path_1.default.resolve(destination, "packages");
+                    fs_1.default.mkdirSync(newFolderPath);
                     console.log("Done copying.");
                     return [3 /*break*/, 3];
                 case 2:

@@ -104,9 +104,13 @@ export async function copyApplicationTemplate(
   await ncp(templateFilesPath, destinationFolder);
 }
 
-export async function copyTemplate(name: string, template: string) {
+export async function copyTemplate(
+  name: string,
+  template: string,
+  folder: string = ""
+) {
   try {
-    const destinationFolder = path.resolve(process.cwd(), name);
+    const destinationFolder = path.resolve(process.cwd(), folder, name);
     createDirectory(destinationFolder);
 
     console.log(`Creating ${chalk.green("package.json")}...`);
