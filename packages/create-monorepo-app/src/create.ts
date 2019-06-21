@@ -3,17 +3,40 @@ import inquirer from "inquirer";
 import kebabCase from "lodash.kebabcase";
 import chalk from "chalk";
 import program from "commander";
-import { appAlreadyExists, resolveAppFolder } from "./paths";
+import { appAlreadyExists } from "./paths";
 import { copyTemplate } from "./copy-template";
+import { getTemplates, isValidTemplate } from "./templates";
+import fs from "fs";
 import path from "path";
-import { getTemplates } from "./templates";
+import rimraf from "rimraf";
+import { promisify } from "util";
 const clearConsole = require("react-dev-utils/clearConsole");
 const pkgJson = require("../package.json");
 
-async function createApplication(appName: string) {
-  const destinationFolder = path.resolve(process.cwd(), appName);
-  await copyTemplate(destinationFolder, "typescript");
-  // console.log("Creating new monorepo at", chalk.green(destFolder));
+const rmrf = promisify(rimraf);
+
+async function cleanUp(appName: string) {
+  try {
+    const folder = path.resolve(process.cwd(), appName);
+    const folderExists = fs.existsSync(folder);
+
+    if (folderExists) {
+      await rmrf(folder);
+    }
+  } catch (err) {
+    console.error("Error while cleaning up");
+    throw new Error(err);
+    // do nothing
+  }
+}
+
+async function createApplication(appName: string, templateName: string) {
+  try {
+    await copyTemplate(appName, templateName);
+  } catch (err) {
+    console.error("Error while creating application");
+    throw new Error(err);
+  }
   // await copyTemplate(destFolder);
   // const pathToPkgJson = path.resolve(destFolder, "package.json");
   // const pkgJson = require(pathToPkgJson);
@@ -26,6 +49,7 @@ const start = async (appName: string, templateName: string) => {
     type: "input",
     name: "name",
     message: "Name",
+    when: () => !appName,
     filter: (input: string) => kebabCase(input),
     validate: (input: string) => {
       if (!input) {
@@ -41,29 +65,60 @@ const start = async (appName: string, templateName: string) => {
     }
   };
 
+  const templateChoices = getTemplates().map(template => ({
+    name: template.name,
+    value: template.templateName
+  }));
   const templateNamePrompt = {
-    type: "expand",
-    name: "templateName",
+    type: "list",
+    name: "template",
     message: "Template",
-    choices: getTemplates().map(template => template)
+    when: () => !templateName,
+    choices: templateChoices
   };
 
-  const prompts = [];
-  const formattedAppName = kebabCase(appName);
-
-  if (!appName) {
-    prompts.push(appNamePrompt);
-  } else if (appAlreadyExists(formattedAppName)) {
-    console.log(
-      `An application with name ${chalk.red(
-        formattedAppName
-      )} already exists. Please choose another one.`
-    );
-    prompts.push(appNamePrompt);
-  }
+  const prompts = [appNamePrompt, templateNamePrompt];
 
   const { name, template } = await inquirer.prompt(prompts as any);
-  const appFolder = resolveAppFolder(name);
+
+  if (name) appName = name;
+  appName = kebabCase(appName);
+
+  if (template) templateName = template;
+
+  if (!isValidTemplate(templateName)) {
+    console.log(`Template ${chalk.red(templateName)} is not a valid template`);
+    console.log(`Please select a valid template from the list.`);
+    const templatePromptWithoutWhen = { ...templateNamePrompt };
+    delete templatePromptWithoutWhen.when;
+    const validTemplateName = await inquirer.prompt(
+      templatePromptWithoutWhen as any
+    );
+    templateName = (validTemplateName as { template: string }).template;
+  }
+
+  if (appAlreadyExists(appName)) {
+    console.log(`Folder ${chalk.red(appName)} already exists`);
+    const appNamePromptWithoutWhen = { ...appNamePrompt };
+    delete appNamePromptWithoutWhen.when;
+    const validAppName = await inquirer.prompt(appNamePromptWithoutWhen as any);
+    appName = (validAppName as { name: string }).name;
+  }
+
+  console.log(
+    `Creating new application ${chalk.greenBright(
+      appName
+    )} with template ${chalk.greenBright(
+      templateChoices.find(t => t.value === templateName)!.name
+    )}`
+  );
+
+  try {
+    await createApplication(appName, templateName);
+  } catch (err) {
+    await cleanUp(appName);
+    console.error(err);
+  }
 };
 
 (async () => {

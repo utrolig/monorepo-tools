@@ -1,5 +1,15 @@
 {
   "name": "React TypeScript",
-  "dependencies": [],
-  "devDependencies": ["@types/react", "@types/react-dom", "typescript"]
+  "dependencies": ["react", "react-dom"],
+  "devDependencies": [
+    "@types/react",
+    "@types/react-dom",
+    "react-monorepo-compiler",
+    "typescript"
+  ],
+  "scripts": {
+    "build": "react-monorepo-compiler build",
+    "start": "react-monorepo-compiler start",
+    "test": "react-monorepo-compiler test"
+  }
 }
