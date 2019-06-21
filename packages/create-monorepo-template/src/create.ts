@@ -62,7 +62,7 @@ async function createMonorepo(destFolder: string) {
     const pathToPkgJson = path.resolve(destFolder, "package.json");
     const pkgJson = require(pathToPkgJson);
     pkgJson.scripts = {
-      new: "create-monorepo-app"
+      new: "create-monorepo-app -f packages"
     };
     pkgJson.name = kebabCase(folderName);
     writeFileSync(pathToPkgJson, JSON.stringify(pkgJson, null, 2));
