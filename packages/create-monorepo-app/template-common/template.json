@@ -1,0 +1,5 @@
+{
+  "name": "Common",
+  "dependencies": ["react", "react-dom"],
+  "devDependencies": ["react-monorepo-compiler"]
+}

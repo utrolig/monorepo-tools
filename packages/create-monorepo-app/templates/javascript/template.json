@@ -1,0 +1,5 @@
+{
+  "name": "React",
+  "dependencies": [],
+  "devDependencies": ["@types/react", "@types/react-dom", "typescript"]
+}
