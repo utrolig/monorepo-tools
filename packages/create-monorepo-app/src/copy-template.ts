@@ -94,6 +94,16 @@ export function createPkgJsonAndReturnDependenciesToInstall(
   return { depsToInstall, devDepsToInstall };
 }
 
+export async function copyApplicationTemplate(
+  destinationFolder: string,
+  template: string
+) {
+  const templateFilesPath = path.resolve(templatesFolder, template, "files");
+  console.log("templateFilesPath", templateFilesPath);
+  console.log("destinationFolder", destinationFolder);
+  await ncp(templateFilesPath, destinationFolder);
+}
+
 export async function copyTemplate(name: string, template: string) {
   try {
     const destinationFolder = path.resolve(process.cwd(), name);
@@ -107,6 +117,7 @@ export async function copyTemplate(name: string, template: string) {
     );
     console.log("Copying template to", chalk.green(destinationFolder));
     copyCommonTemplate(destinationFolder);
+    copyApplicationTemplate(destinationFolder, template);
     console.log("Done copying.");
     console.log("Installing dependencies");
     await installDeps(deps, destinationFolder);
