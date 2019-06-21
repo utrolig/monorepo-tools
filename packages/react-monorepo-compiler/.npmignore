@@ -1,3 +1,5 @@
 src/
 .editorconfig
 tsconfig.json
+nodemon.json
+yarn-error.log
