@@ -1,15 +1,11 @@
 {
   "name": "create-monorepo-template",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "main": "index.js",
   "license": "MIT",
   "bin": {
     "create-monorepo-template": "./bin/create.js"
   },
-  "files": [
-    "bin",
-    "templates"
-  ],
   "dependencies": {
     "@types/inquirer": "^6.0.3",
     "@types/lodash.kebabcase": "^4.1.6",
@@ -26,6 +22,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon"
-  }
+    "dev": "nodemon",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {}
 }
