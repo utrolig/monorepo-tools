@@ -2,6 +2,7 @@
   "name": "React TypeScript",
   "dependencies": ["react", "react-dom"],
   "devDependencies": [
+    "@types/jest",
     "@types/react",
     "@types/react-dom",
     "react-monorepo-compiler",

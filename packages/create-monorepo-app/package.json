@@ -6,6 +6,11 @@
   "bin": {
     "create-monorepo-app": "./bin/create.js"
   },
+  "files": [
+    "bin/**/*",
+    "template-common/**/*",
+    "templates/**/*"
+  ],
   "dependencies": {
     "@types/inquirer": "^6.0.3",
     "@types/lodash.kebabcase": "^4.1.6",
