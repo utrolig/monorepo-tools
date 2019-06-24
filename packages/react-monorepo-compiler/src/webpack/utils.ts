@@ -1,10 +1,32 @@
 import fs from "fs";
 import path from "path";
+import { srcFolder, currentAppDirectory } from "./paths";
 
 export const isProduction = () => {
   const isProdEnv = process.env.NODE_ENV === "production";
   return isProdEnv;
 };
+
+export function isTypescriptApp() {
+  const entryFile = getEntryPoint(srcFolder);
+  return entryFile.endsWith("ts") || entryFile.endsWith("tsx");
+}
+
+export function getConfigOrCreateIfNotExists() {
+  const configFilePath = isTypescriptApp()
+    ? path.resolve(currentAppDirectory, "tsconfig.json")
+    : path.resolve(currentAppDirectory, "jsconfig.json");
+  const hasConfig = fs.existsSync(configFilePath);
+
+  if (!hasConfig) {
+    const cfg = {
+      extends: "react-monorepo-compiler/tsconfig.app.json"
+    };
+    fs.writeFileSync(configFilePath, JSON.stringify(cfg, null, 2));
+  }
+
+  return configFilePath;
+}
 
 export function getEntryPoint(pathToSrcFolder: string) {
   const ts = "index.ts";

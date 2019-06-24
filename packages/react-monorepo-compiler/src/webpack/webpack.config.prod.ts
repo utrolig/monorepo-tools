@@ -4,7 +4,9 @@ import merge from "webpack-merge";
 import {
   htmlWebpackPlugin,
   forkTsCheckerPlugin,
-  miniCssPlugin
+  miniCssPlugin,
+  envPlugin,
+  interpolateHtmlPlugin
 } from "./plugins";
 import TerserPlugin from "terser-webpack-plugin";
 import isWsl from "is-wsl";
@@ -15,6 +17,7 @@ import OptimizeCSSAssetsPlugin from "optimize-css-assets-webpack-plugin";
 const extendedConfig: Configuration = {
   mode: "production",
   devtool: "source-map",
+  bail: true,
   output: {
     path: buildFolder,
     filename: "static/js/[name].[contenthash:8].js",
@@ -85,7 +88,13 @@ const extendedConfig: Configuration = {
       })
     ]
   },
-  plugins: [miniCssPlugin, htmlWebpackPlugin, forkTsCheckerPlugin]
+  plugins: [
+    envPlugin,
+    miniCssPlugin,
+    htmlWebpackPlugin,
+    interpolateHtmlPlugin,
+    forkTsCheckerPlugin
+  ]
 };
 
 export default merge(baseConfig, extendedConfig);
