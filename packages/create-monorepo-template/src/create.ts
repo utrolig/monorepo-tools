@@ -12,7 +12,7 @@ const clearConsole = require("react-dev-utils/clearConsole");
 
 clearConsole();
 
-const [_firstArg, __secondArg, folderName] = process.argv;
+let [_firstArg, __secondArg, folderName] = process.argv;
 
 const startInquirer = () =>
   inquirer
@@ -34,7 +34,11 @@ const startInquirer = () =>
         return true;
       }
     })
-    .then((answers: any) => answers["name"])
+    .then((answers: any) => {
+      const name = answers["name"];
+      folderName = name;
+      return name;
+    })
     .then(resolveAppFolder)
     .then(createMonorepo);
 
