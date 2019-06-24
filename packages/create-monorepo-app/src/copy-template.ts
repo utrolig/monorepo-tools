@@ -99,8 +99,6 @@ export async function copyApplicationTemplate(
   template: string
 ) {
   const templateFilesPath = path.resolve(templatesFolder, template, "files");
-  console.log("templateFilesPath", templateFilesPath);
-  console.log("destinationFolder", destinationFolder);
   await ncp(templateFilesPath, destinationFolder);
 }
 
