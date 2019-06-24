@@ -1,8 +1,8 @@
 import { Configuration } from "webpack-dev-server";
 
 const config: Configuration = {
-  // clientLogLevel: "none",
-  // quiet: true,
+  clientLogLevel: "none",
+  quiet: true,
   historyApiFallback: {
     disableDotRule: true
   },

@@ -3,6 +3,22 @@ import fs from "fs";
 
 const cwd = process.cwd();
 const srcFolder = path.resolve(cwd, "src");
+export const testsSetup = path.resolve(srcFolder, "setupTests");
+export const appPkgJson = path.resolve(cwd, "package.json");
+
+export const moduleFileExtensions = [
+  "web.mjs",
+  "mjs",
+  "web.js",
+  "js",
+  "web.ts",
+  "ts",
+  "web.tsx",
+  "tsx",
+  "json",
+  "web.jsx",
+  "jsx"
+];
 
 function getValidEntryFile() {
   const tsExtension = ".ts";
