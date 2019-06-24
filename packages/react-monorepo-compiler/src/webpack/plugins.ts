@@ -1,7 +1,8 @@
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import { templatePath } from "./paths";
+import { templatePath, tsConfig, tsLintConfig } from "./paths";
+const ForkTsCheckerPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
 
 export const miniCssPlugin = new MiniCssExtractPlugin({
   filename: "assets/css/[name].css",
@@ -14,3 +15,10 @@ export const htmlWebpackPlugin = new HtmlWebpackPlugin({
 });
 
 export const cleanDistFolderPlugin = new CleanWebpackPlugin();
+
+export const forkTsCheckerPlugin = new ForkTsCheckerPlugin({
+  async: true,
+  useTypescriptIncrementalApi: true,
+  tsconfig: tsConfig,
+  tslint: tsLintConfig
+});
