@@ -1,0 +1,11 @@
+{
+  "linterOptions": {
+    "exclude": ["*.json", "**/*.json"]
+  },
+  "extends": ["tslint:latest", "tslint-react"],
+  "rules": {
+    "no-implicit-dependencies": false,
+    "interface-over-type-literal": false,
+    "ordered-imports": false
+  }
+}

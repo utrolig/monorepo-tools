@@ -43,18 +43,46 @@ function logStartedCompilation() {
   console.log("Compiling...");
 }
 
+const {
+  choosePort,
+  createCompiler,
+  prepareProxy,
+  prepareUrls
+} = require("react-dev-utils/WebpackDevServerUtils");
+
 export function startDevServer() {
   const port = 3000;
   const host = "0.0.0.0";
   const serverAddress = `${host}:${port}`;
-  const compiler = Webpack(webpackConfig);
-  compiler.hooks.done.tap("test", stats => {
-    if (stats.hasErrors()) {
-      compilationError(stats, serverAddress);
-    } else {
-      compilationSuccess(stats, serverAddress);
-    }
+  const devSocket = {
+    warnings: (warnings: any) =>
+      (devServer as any).sockWrite(
+        (devServer as any).sockets,
+        "warnings",
+        warnings
+      ),
+    errors: (errors: any) =>
+      (devServer as any).sockWrite((devServer as any).sockets, "errors", errors)
+  };
+  const urls = prepareUrls("http", host, port);
+  const appName = "stian";
+  const compiler = createCompiler({
+    appName,
+    config: webpackConfig,
+    devSocket,
+    urls,
+    useYarn: true,
+    useTypeScript: true,
+    webpack: Webpack
   });
+  // const compiler = Webpack(webpackConfig);
+  // compiler.hooks.done.tap("test", stats => {
+  //   if (stats.hasErrors()) {
+  //     compilationError(stats, serverAddress);
+  //   } else {
+  //     compilationSuccess(stats, serverAddress);
+  //   }
+  // });
   const devServer = new WebpackDevServer(compiler, devServerOptions);
   devServer.listen(port, host, onDevServerStart);
 }
