@@ -1,5 +1,18 @@
 import WebpackDevServer from "webpack-dev-server";
 import chalk from "chalk";
+import { publicFolder, buildFolder, templatePath } from "./webpack/paths";
+import fs from "fs-extra";
+
+export function emptyBuildFolder() {
+  fs.emptyDirSync(buildFolder);
+}
+
+export function copyPublicFolder() {
+  fs.copySync(publicFolder, buildFolder, {
+    dereference: true,
+    filter: file => file !== templatePath
+  });
+}
 
 export function clearConsole() {
   process.stdout.write(

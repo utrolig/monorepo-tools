@@ -1,5 +1,4 @@
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { templatePath, tsConfig, tsLintConfig } from "./paths";
 import { isProduction } from "./utils";
@@ -14,8 +13,6 @@ export const htmlWebpackPlugin = new HtmlWebpackPlugin({
   inject: true,
   template: templatePath
 });
-
-export const cleanPublicFolderPlugin = new CleanWebpackPlugin();
 
 export const forkTsCheckerPlugin = new ForkTsCheckerPlugin({
   async: !isProduction(),

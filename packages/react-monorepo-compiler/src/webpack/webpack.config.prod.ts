@@ -4,8 +4,7 @@ import merge from "webpack-merge";
 import {
   htmlWebpackPlugin,
   forkTsCheckerPlugin,
-  miniCssPlugin,
-  cleanPublicFolderPlugin
+  miniCssPlugin
 } from "./plugins";
 import TerserPlugin from "terser-webpack-plugin";
 import isWsl from "is-wsl";
@@ -86,12 +85,7 @@ const extendedConfig: Configuration = {
       })
     ]
   },
-  plugins: [
-    cleanPublicFolderPlugin,
-    miniCssPlugin,
-    htmlWebpackPlugin,
-    forkTsCheckerPlugin
-  ]
+  plugins: [miniCssPlugin, htmlWebpackPlugin, forkTsCheckerPlugin]
 };
 
 export default merge(baseConfig, extendedConfig);
