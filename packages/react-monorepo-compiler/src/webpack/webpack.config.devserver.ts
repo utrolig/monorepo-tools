@@ -1,4 +1,5 @@
 import { Configuration } from "webpack-dev-server";
+import { publicFolder } from "./paths";
 
 const config: Configuration = {
   clientLogLevel: "none",
@@ -7,6 +8,8 @@ const config: Configuration = {
   historyApiFallback: {
     disableDotRule: true
   },
+  contentBase: publicFolder,
+  publicPath: "/",
   open: true,
   watchOptions: {
     poll: true
