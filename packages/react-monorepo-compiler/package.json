@@ -3,6 +3,11 @@
   "version": "0.0.10",
   "main": "index.js",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/utrolig/monorepo-tools",
+    "directory": "packages/react-monorepo-compiler"
+  },
   "bin": {
     "react-monorepo-compiler": "./bin/rmc.js"
   },
