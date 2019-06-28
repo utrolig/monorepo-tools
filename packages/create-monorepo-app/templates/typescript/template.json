@@ -6,7 +6,8 @@
     "@types/react",
     "@types/react-dom",
     "react-monorepo-compiler",
-    "typescript"
+    "typescript",
+    "tslint"
   ],
   "scripts": {
     "build": "react-monorepo-compiler build",
