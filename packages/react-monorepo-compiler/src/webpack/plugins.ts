@@ -1,6 +1,7 @@
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import { templatePath, tsLintConfig } from "./paths";
+import { templatePath, tsLintConfig, appNodeModules } from "./paths";
+import resolve from "resolve";
 import {
   isProduction,
   isTypescriptApp,
@@ -10,6 +11,7 @@ import webpack from "webpack";
 import { getClientEnvironment } from "./env";
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const ForkTsCheckerPlugin = require("react-dev-utils/ForkTsCheckerWebpackPlugin");
+const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 
 const env = getClientEnvironment("/");
 // This is added to support dynamic publicUrl in the future.
@@ -32,7 +34,19 @@ export const htmlWebpackPlugin = new HtmlWebpackPlugin({
 
 export const forkTsCheckerPlugin = new ForkTsCheckerPlugin({
   async: !isProduction(),
+  checkSyntacticErrors: true,
   useTypescriptIncrementalApi: true,
+  formatter: isProduction() ? typescriptFormatter : undefined,
   tsconfig: getConfigOrCreateIfNotExists(),
-  tslint: isTypescriptApp() ? tsLintConfig : undefined
+  typescript: resolve.sync("typescript", { basedir: appNodeModules }),
+  tslint: isTypescriptApp() ? tsLintConfig : undefined,
+  reportFiles: [
+    "**",
+    "!**/node_modules/**",
+    "!**/__tests__/**",
+    "!**/?(*.)(spec|test).*",
+    "!**/src/setupProxy.*",
+    "!**/src/setupTests.*"
+  ],
+  silent: true
 });

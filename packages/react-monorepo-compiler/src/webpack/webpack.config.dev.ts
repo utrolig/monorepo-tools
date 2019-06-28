@@ -7,8 +7,14 @@ import {
   forkTsCheckerPlugin,
   interpolateHtmlPlugin
 } from "./plugins";
+import { getEntryPoint } from "./utils";
+import { srcFolder } from "./paths";
 
 const extendedConfig: Configuration = {
+  entry: [
+    require.resolve("react-dev-utils/webpackHotDevClient"),
+    getEntryPoint(srcFolder)
+  ],
   mode: "development",
   devtool: "cheap-module-source-map",
   plugins: [

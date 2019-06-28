@@ -10,11 +10,13 @@ import {
 } from "./plugins";
 import TerserPlugin from "terser-webpack-plugin";
 import isWsl from "is-wsl";
-import { buildFolder } from "./paths";
+import { buildFolder, srcFolder } from "./paths";
 import safePostCssParser from "postcss-safe-parser";
 import OptimizeCSSAssetsPlugin from "optimize-css-assets-webpack-plugin";
+import { getEntryPoint } from "./utils";
 
 const extendedConfig: Configuration = {
+  entry: getEntryPoint(srcFolder),
   mode: "production",
   devtool: "source-map",
   bail: true,

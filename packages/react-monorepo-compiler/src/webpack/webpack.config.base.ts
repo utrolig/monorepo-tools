@@ -4,7 +4,6 @@ import { babelRule, cssRule, fileRule } from "./module-rules";
 import { srcFolder, getAliasPaths } from "./paths";
 
 const config: Configuration = {
-  entry: getEntryPoint(srcFolder),
   context: srcFolder,
   resolve: {
     alias: getAliasPaths(),
@@ -12,6 +11,17 @@ const config: Configuration = {
   },
   module: {
     rules: [babelRule, cssRule, fileRule]
+  },
+  performance: false,
+  node: {
+    module: "empty",
+    dgram: "empty",
+    dns: "mock",
+    fs: "empty",
+    http2: "empty",
+    net: "empty",
+    tls: "empty",
+    child_process: "empty"
   }
 };
 
