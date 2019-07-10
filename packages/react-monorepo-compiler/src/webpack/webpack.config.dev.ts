@@ -15,6 +15,9 @@ const extendedConfig: Configuration = {
     require.resolve("react-dev-utils/webpackHotDevClient"),
     getEntryPoint(srcFolder)
   ],
+  output: {
+    publicPath: "/"
+  },
   mode: "development",
   devtool: "cheap-module-source-map",
   plugins: [
