@@ -1,6 +1,5 @@
 import { Configuration } from "webpack";
-import { getEntryPoint } from "./utils";
-import { babelRule, cssRule, fileRule } from "./module-rules";
+import { babelRule, cssRule, fileRule, eslintRule } from "./module-rules";
 import { srcFolder, getAliasPaths } from "./paths";
 
 const config: Configuration = {
@@ -10,7 +9,7 @@ const config: Configuration = {
     extensions: [".tsx", ".ts", ".jsx", ".js"]
   },
   module: {
-    rules: [babelRule, cssRule, fileRule]
+    rules: [eslintRule, { oneOf: [babelRule, cssRule, fileRule] }]
   },
   performance: false,
   node: {

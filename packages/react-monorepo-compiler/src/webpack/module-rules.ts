@@ -3,6 +3,25 @@ import autoprefixer from "autoprefixer";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { isProduction } from "./utils";
 
+export const eslintRule: RuleSetRule = {
+  test: /\.(js|mjs|jsx|ts|tsx)$/,
+  enforce: "pre",
+  exclude: /node_modules/,
+  use: [
+    {
+      loader: require.resolve("eslint-loader"),
+      options: {
+        baseConfig: {
+          extends: [require.resolve("eslint-config-react-app")]
+        },
+        formatter: require.resolve("react-dev-utils/eslintFormatter"),
+        eslintPath: require.resolve("eslint"),
+        resolvePluginsRelativeTo: __dirname
+      }
+    }
+  ]
+};
+
 export const cssRule: RuleSetRule = {
   test: /\.css$/,
   use: [
