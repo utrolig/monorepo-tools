@@ -16,7 +16,8 @@ export const eslintRule: RuleSetRule = {
         },
         formatter: require.resolve("react-dev-utils/eslintFormatter"),
         eslintPath: require.resolve("eslint"),
-        resolvePluginsRelativeTo: __dirname
+        resolvePluginsRelativeTo: __dirname,
+        useEslintrc: false
       }
     }
   ]
