@@ -13,10 +13,6 @@ const config: Configuration = {
   open: true,
   watchOptions: {
     poll: true
-  },
-  overlay: {
-    warnings: true,
-    errors: true
   }
 };
 

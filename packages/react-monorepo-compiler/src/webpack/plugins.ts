@@ -2,11 +2,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { templatePath, tsLintConfig, appNodeModules } from "./paths";
 import resolve from "resolve";
-import {
-  isProduction,
-  isTypescriptApp,
-  getConfigOrCreateIfNotExists
-} from "./utils";
+import { isProduction, getConfigOrCreateIfNotExists } from "./utils";
 import webpack from "webpack";
 import { getClientEnvironment } from "./env";
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
@@ -39,7 +35,6 @@ export const forkTsCheckerPlugin = new ForkTsCheckerPlugin({
   formatter: isProduction() ? typescriptFormatter : undefined,
   tsconfig: getConfigOrCreateIfNotExists(),
   typescript: resolve.sync("typescript", { basedir: appNodeModules }),
-  tslint: isTypescriptApp() ? tsLintConfig : undefined,
   reportFiles: [
     "**",
     "!**/node_modules/**",
