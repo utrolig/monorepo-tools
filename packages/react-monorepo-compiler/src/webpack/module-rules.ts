@@ -1,7 +1,7 @@
 import { RuleSetRule } from "webpack";
 import autoprefixer from "autoprefixer";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import { isProduction } from "./utils";
+import { isProduction, isContinousIntegration } from "./utils";
 
 export const eslintRule: RuleSetRule = {
   test: /\.(js|mjs|jsx|ts|tsx)$/,
@@ -62,6 +62,21 @@ export const fileRule: RuleSetRule = {
   }
 };
 
+const getRemoveTestAttributesPlugin = () => {
+  const testAttributeRemovalPlugin = [
+    require.resolve('babel-plugin-jsx-remove-data-test-id'),
+    {
+      attributes: ['data-test-element', 'data-test-id']
+    }
+  ];
+
+  if (isProduction() && !isContinousIntegration()) {
+    return testAttributeRemovalPlugin;
+  }
+
+  return false;
+}
+
 export const babelRule: RuleSetRule = {
   test: /\.(ts|tsx|js|jsx)$/,
   exclude: /node_modules/,
@@ -77,8 +92,9 @@ export const babelRule: RuleSetRule = {
         require.resolve("@babel/plugin-proposal-class-properties"),
         require.resolve("@babel/plugin-proposal-object-rest-spread"),
         require.resolve("@babel/plugin-transform-runtime"),
-        require.resolve("@babel/plugin-syntax-dynamic-import")
-      ]
+        require.resolve("@babel/plugin-syntax-dynamic-import"),
+        getRemoveTestAttributesPlugin(),
+      ].filter(Boolean)
     }
   }
 };
