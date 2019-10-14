@@ -10,6 +10,18 @@ export const templatePath = path.join(publicFolder, "index.html");
 export const tsConfig = path.join(currentAppDirectory, "tsconfig.json");
 export const jsConfig = path.join(currentAppDirectory, "jsconfig.json");
 export const tsLintConfig = path.join(currentAppDirectory, "tslint.json");
+export const getAppEntryFile = (srcPath: string) => {
+  const tsxPath = path.join(srcPath, "index.tsx");
+  const tsPath = path.join(srcPath, "index.ts");
+  const jsPath = path.join(srcPath, "index.js");
+  const isTsx = fs.existsSync(tsxPath);
+  const isTs = fs.existsSync(tsPath);
+  const isJs = fs.existsSync(jsPath);
+  if (isTsx) return tsxPath;
+  if (isTs) return tsPath;
+  if (isJs) return jsPath;
+  throw new Error("No app entry file found.");
+};
 export const getAliasPaths = () => {
   const packagesFolder = path.join(currentAppDirectory, "../");
   const folders = fs.readdirSync(packagesFolder);

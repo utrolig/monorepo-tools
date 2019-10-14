@@ -1,7 +1,9 @@
 import { RuleSetRule } from "webpack";
 import autoprefixer from "autoprefixer";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import eslint from "eslint";
 import { isProduction, isContinousIntegration } from "./utils";
+import { srcFolder, getAppEntryFile } from "./paths";
 
 export const eslintRule: RuleSetRule = {
   test: /\.(js|mjs|jsx|ts|tsx)$/,
@@ -12,26 +14,38 @@ export const eslintRule: RuleSetRule = {
       loader: require.resolve("eslint-loader"),
       options: {
         formatter: require.resolve("react-dev-utils/eslintFormatter"),
-        eslintPath: require.resolve("eslint")
+        eslintPath: require.resolve("eslint"),
+        baseConfig: (() => {
+          const eslintCli = new eslint.CLIEngine({});
+          let eslintConfig;
+
+          try {
+            const entryFilePath = getAppEntryFile(srcFolder);
+            eslintConfig = eslintCli.getConfigForFile(entryFilePath);
+          } catch (e) {
+            console.log(
+              "No ESLint configuration found, falling back to default."
+            );
+            eslintConfig = {};
+          }
+          return eslintConfig;
+        })()
       }
     }
   ]
 };
 
-export const cssRule: RuleSetRule = {
-  test: /\.css$/,
-  use: [
-    isProduction()
-      ? {
-          loader: MiniCssExtractPlugin.loader as any,
-          options: { publicPath: "../../" }
-        }
-      : require.resolve("style-loader"),
+const getStyleLoader = (cssOptions: any, preProcessor?: string) => {
+  const isDevelopment = !isProduction();
+  const loaders: any = [
+    isDevelopment && require.resolve("style-loader"),
+    isProduction() && {
+      loader: MiniCssExtractPlugin.loader as any,
+      options: { publicPath: "../../" }
+    },
     {
       loader: require.resolve("css-loader"),
-      options: {
-        importLoaders: 1
-      }
+      options: cssOptions
     },
     {
       loader: require.resolve("postcss-loader"),
@@ -46,7 +60,31 @@ export const cssRule: RuleSetRule = {
         ]
       }
     }
-  ]
+  ].filter(Boolean);
+
+  if (preProcessor) {
+    loaders.push({
+      loader: require.resolve("resolve-url-loader"),
+      options: {
+        sourceMap: isDevelopment
+      }
+    });
+  }
+
+  return loaders;
+};
+
+export const sassRule = {
+  test: /\.(scss|sass)$/,
+  use: getStyleLoader(
+    { importLoaders: 2, sourceMap: !isProduction() },
+    "sass-loader"
+  )
+};
+
+export const cssRule: RuleSetRule = {
+  test: /\.css$/,
+  use: getStyleLoader({ importLoaders: 1, sourceMap: !isProduction() })
 };
 
 export const fileRule: RuleSetRule = {
@@ -64,9 +102,9 @@ export const fileRule: RuleSetRule = {
 
 const getRemoveTestAttributesPlugin = () => {
   const testAttributeRemovalPlugin = [
-    require.resolve('babel-plugin-jsx-remove-data-test-id'),
+    require.resolve("babel-plugin-jsx-remove-data-test-id"),
     {
-      attributes: ['data-test-element', 'data-test-id']
+      attributes: ["data-test-element", "data-test-id"]
     }
   ];
 
@@ -75,7 +113,7 @@ const getRemoveTestAttributesPlugin = () => {
   }
 
   return false;
-}
+};
 
 export const babelRule: RuleSetRule = {
   test: /\.(ts|tsx|js|jsx)$/,
@@ -93,7 +131,7 @@ export const babelRule: RuleSetRule = {
         require.resolve("@babel/plugin-proposal-object-rest-spread"),
         require.resolve("@babel/plugin-transform-runtime"),
         require.resolve("@babel/plugin-syntax-dynamic-import"),
-        getRemoveTestAttributesPlugin(),
+        getRemoveTestAttributesPlugin()
       ].filter(Boolean)
     }
   }

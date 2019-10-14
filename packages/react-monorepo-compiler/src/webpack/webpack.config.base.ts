@@ -1,15 +1,21 @@
 import { Configuration } from "webpack";
-import { babelRule, cssRule, fileRule, eslintRule } from "./module-rules";
+import {
+  babelRule,
+  cssRule,
+  fileRule,
+  eslintRule,
+  sassRule
+} from "./module-rules";
 import { srcFolder, getAliasPaths } from "./paths";
 
 const config: Configuration = {
   context: srcFolder,
   resolve: {
     alias: getAliasPaths(),
-    extensions: [".tsx", ".ts", ".jsx", ".js"]
+    extensions: [".tsx", ".ts", ".jsx", ".js", ".mjs"]
   },
   module: {
-    rules: [eslintRule, { oneOf: [babelRule, cssRule, fileRule] }]
+    rules: [eslintRule, { oneOf: [babelRule, cssRule, sassRule, fileRule] }]
   },
   performance: false,
   node: {
