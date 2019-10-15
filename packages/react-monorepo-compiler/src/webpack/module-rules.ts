@@ -37,12 +37,21 @@ export const eslintRule: RuleSetRule = {
 
 const getStyleLoader = (cssOptions: any, preProcessor?: string) => {
   const isDevelopment = !isProduction();
-  const loaders: any = [
-    isDevelopment && require.resolve("style-loader"),
-    isProduction() && {
+  const styleOrMiniCssLoader = (() => {
+    if (isDevelopment) {
+      return {
+        loader: require.resolve("style-loader"),
+        options: { injectType: "styleTag" }
+      };
+    }
+
+    return {
       loader: MiniCssExtractPlugin.loader as any,
       options: { publicPath: "../../" }
-    },
+    };
+  })();
+  const loaders: any = [
+    styleOrMiniCssLoader,
     {
       loader: require.resolve("css-loader"),
       options: cssOptions
@@ -63,12 +72,20 @@ const getStyleLoader = (cssOptions: any, preProcessor?: string) => {
   ].filter(Boolean);
 
   if (preProcessor) {
-    loaders.push({
-      loader: require.resolve("resolve-url-loader"),
-      options: {
-        sourceMap: isDevelopment
+    loaders.push(
+      {
+        loader: require.resolve("resolve-url-loader"),
+        options: {
+          sourceMap: isDevelopment
+        }
+      },
+      {
+        loader: require.resolve(preProcessor),
+        options: {
+          sourceMap: true
+        }
       }
-    });
+    );
   }
 
   return loaders;
@@ -113,6 +130,25 @@ const getRemoveTestAttributesPlugin = () => {
   }
 
   return false;
+};
+
+export const externalBabelRule: RuleSetRule = {
+  test: /\.(js|mjs)$/,
+  exclude: /@babel(?:\/|\\{1,2})runtime/,
+  loader: require.resolve("babel-loader"),
+  options: {
+    babelrc: false,
+    configFile: false,
+    compact: false,
+    presets: [
+      [
+        require.resolve("babel-preset-react-app/dependencies"),
+        { helpers: true }
+      ]
+    ],
+    sourceMaps: !isProduction(),
+    inputSourceMap: !isProduction()
+  }
 };
 
 export const babelRule: RuleSetRule = {

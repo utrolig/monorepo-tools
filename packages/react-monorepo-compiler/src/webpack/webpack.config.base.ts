@@ -4,7 +4,8 @@ import {
   cssRule,
   fileRule,
   eslintRule,
-  sassRule
+  sassRule,
+  externalBabelRule
 } from "./module-rules";
 import { srcFolder, getAliasPaths } from "./paths";
 
@@ -15,7 +16,10 @@ const config: Configuration = {
     extensions: [".tsx", ".ts", ".jsx", ".js", ".mjs"]
   },
   module: {
-    rules: [eslintRule, { oneOf: [babelRule, cssRule, sassRule, fileRule] }]
+    rules: [
+      eslintRule,
+      { oneOf: [babelRule, externalBabelRule, cssRule, sassRule, fileRule] }
+    ]
   },
   performance: false,
   node: {
