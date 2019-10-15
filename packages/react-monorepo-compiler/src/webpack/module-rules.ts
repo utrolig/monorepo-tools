@@ -26,7 +26,9 @@ export const eslintRule: RuleSetRule = {
             console.log(
               "No ESLint configuration found, falling back to default."
             );
-            eslintConfig = {};
+            eslintConfig = {
+              extends: "react-app"
+            };
           }
           return eslintConfig;
         })()
