@@ -36,8 +36,6 @@ export const eslintRule: RuleSetRule = {
               extends: [require.resolve("eslint-config-react-app")]
             };
           }
-          console.log("Resolving plugins from ", eslintPluginResolutionPath);
-          console.log("Using config", eslintConfig);
           return eslintConfig;
         })()
       }
