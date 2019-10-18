@@ -1,9 +1,12 @@
 import { RuleSetRule } from "webpack";
 import autoprefixer from "autoprefixer";
+import path from "path";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import eslint from "eslint";
 import { isProduction, isContinousIntegration } from "./utils";
 import { srcFolder, getAppEntryFile } from "./paths";
+
+const pluginDir = path.resolve(__dirname, "../../");
 
 export const eslintRule: RuleSetRule = {
   test: /\.(js|mjs|jsx|ts|tsx)$/,
@@ -15,7 +18,7 @@ export const eslintRule: RuleSetRule = {
       options: {
         formatter: require.resolve("react-dev-utils/eslintFormatter"),
         eslintPath: require.resolve("eslint"),
-        resolvePluginsRelativeTo: __dirname,
+        resolvePluginsRelativeTo: path.resolve(__dirname, "../../"),
         baseConfig: (() => {
           const eslintCli = new eslint.CLIEngine({});
           let eslintConfig;
@@ -30,6 +33,7 @@ export const eslintRule: RuleSetRule = {
             eslintConfig = {
               extends: [require.resolve("eslint-config-react-app")]
             };
+            console.log("__dirname", pluginDir);
             console.log(eslintConfig);
           }
           return eslintConfig;
