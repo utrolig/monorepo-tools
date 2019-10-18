@@ -10,6 +10,12 @@ export const templatePath = path.join(publicFolder, "index.html");
 export const tsConfig = path.join(currentAppDirectory, "tsconfig.json");
 export const jsConfig = path.join(currentAppDirectory, "jsconfig.json");
 export const tsLintConfig = path.join(currentAppDirectory, "tslint.json");
+export const isMonorepo = fs.existsSync(
+  path.join(currentAppDirectory, "../../packages")
+);
+
+export const eslintPluginResolutionPath = __dirname;
+
 export const getAppEntryFile = (srcPath: string) => {
   const tsxPath = path.join(srcPath, "index.tsx");
   const tsPath = path.join(srcPath, "index.ts");

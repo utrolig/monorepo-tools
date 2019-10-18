@@ -4,9 +4,11 @@ import path from "path";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import eslint from "eslint";
 import { isProduction, isContinousIntegration } from "./utils";
-import { srcFolder, getAppEntryFile } from "./paths";
-
-const pluginDir = path.resolve(__dirname, "../../");
+import {
+  srcFolder,
+  getAppEntryFile,
+  eslintPluginResolutionPath
+} from "./paths";
 
 export const eslintRule: RuleSetRule = {
   test: /\.(js|mjs|jsx|ts|tsx)$/,
@@ -18,7 +20,7 @@ export const eslintRule: RuleSetRule = {
       options: {
         formatter: require.resolve("react-dev-utils/eslintFormatter"),
         eslintPath: require.resolve("eslint"),
-        resolvePluginsRelativeTo: path.resolve(__dirname, "../../"),
+        resolvePluginsRelativeTo: eslintPluginResolutionPath,
         baseConfig: (() => {
           const eslintCli = new eslint.CLIEngine({});
           let eslintConfig;
@@ -33,9 +35,9 @@ export const eslintRule: RuleSetRule = {
             eslintConfig = {
               extends: [require.resolve("eslint-config-react-app")]
             };
-            console.log("__dirname", pluginDir);
-            console.log(eslintConfig);
           }
+          console.log("Resolving plugins from ", eslintPluginResolutionPath);
+          console.log("Using config", eslintConfig);
           return eslintConfig;
         })()
       }
