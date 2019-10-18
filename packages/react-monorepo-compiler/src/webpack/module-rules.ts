@@ -15,6 +15,7 @@ export const eslintRule: RuleSetRule = {
       options: {
         formatter: require.resolve("react-dev-utils/eslintFormatter"),
         eslintPath: require.resolve("eslint"),
+        resolvePluginsRelativeTo: __dirname,
         baseConfig: (() => {
           const eslintCli = new eslint.CLIEngine({});
           let eslintConfig;
@@ -27,8 +28,9 @@ export const eslintRule: RuleSetRule = {
               "No ESLint configuration found, falling back to default."
             );
             eslintConfig = {
-              extends: "react-app"
+              extends: [require.resolve("eslint-config-react-app")]
             };
+            console.log(eslintConfig);
           }
           return eslintConfig;
         })()
