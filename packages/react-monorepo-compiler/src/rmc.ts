@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import "./webpack/env";
 const [_firstArg, _secondArg, task] = process.argv;
 
 switch (task) {

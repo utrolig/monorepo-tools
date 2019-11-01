@@ -1,9 +1,8 @@
 import { RuleSetRule } from "webpack";
 import autoprefixer from "autoprefixer";
-import path from "path";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import eslint from "eslint";
-import { isProduction, isContinousIntegration } from "./utils";
+import { isProduction } from "./utils";
 import {
   srcFolder,
   getAppEntryFile,
@@ -133,7 +132,10 @@ const getRemoveTestAttributesPlugin = () => {
     }
   ];
 
-  if (isProduction() && !isContinousIntegration()) {
+  const STRIP_TEST_ATTRIBUTES =
+    process.env.REACT_APP_STRIP_TEST_ATTRIBUTES === "true";
+
+  if (STRIP_TEST_ATTRIBUTES) {
     return testAttributeRemovalPlugin;
   }
 
