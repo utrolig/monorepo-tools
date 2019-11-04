@@ -18,8 +18,8 @@ function onDevServerStart(err: any) {
 }
 
 export async function startDevServer() {
-  const defaultPort = 3000;
-  const host = "0.0.0.0";
+  const defaultPort = parseInt(process.env.PORT!, 10) || 3000;
+  const host = `0.0.0.0`;
   const port = await choosePort(host, defaultPort);
   const devSocket = {
     warnings: (warnings: any) =>
