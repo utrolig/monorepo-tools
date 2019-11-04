@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { srcFolder, currentAppDirectory } from "./paths";
+import { appPkgJson } from "../paths";
 
 export const isProduction = () => {
   const isProdEnv = process.env.NODE_ENV === "production";
@@ -8,9 +9,9 @@ export const isProduction = () => {
 };
 
 export const isContinousIntegration = () => {
-  const isCiEnv = process.env.CI === 'true';
+  const isCiEnv = process.env.CI === "true";
   return isCiEnv;
-}
+};
 
 export function isTypescriptApp() {
   const entryFile = getEntryPoint(srcFolder);
@@ -63,4 +64,32 @@ export function getEntryPoint(pathToSrcFolder: string) {
   } else {
     throw new Error("No entry point found for application.");
   }
+}
+
+export function needsMonacoImports() {
+  const packageJson = require(appPkgJson);
+  const dependencies = Object.keys(packageJson.dependencies);
+
+  const needsImports = dependencies.some(i => i === "monaco-editor");
+  return needsImports;
+}
+
+export function getMonacoEntryPoints(
+  pathToSrcFolder: string
+): { [key: string]: string } {
+  const needsMonaco = needsMonacoImports();
+
+  if (!needsMonaco) return {};
+
+  const getMonacoFolder = () => {
+    return path.resolve(pathToSrcFolder, "../node_modules/monaco-editor");
+  };
+
+  return {
+    "editor.worker": getMonacoFolder() + "/esm/vs/editor/editor.worker.js",
+    "json.worker": getMonacoFolder() + "/esm/vs/language/json/json.worker.js",
+    "css.worker": getMonacoFolder() + "/esm/vs/language/css/css.worker.js",
+    "html.worker": getMonacoFolder() + "/esm/vs/language/html/html.worker.js",
+    "ts.worker": getMonacoFolder() + "/esm/vs/language/typescript/ts.worker.js"
+  };
 }

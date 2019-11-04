@@ -7,14 +7,15 @@ import {
   forkTsCheckerPlugin,
   interpolateHtmlPlugin
 } from "./plugins";
-import { getEntryPoint } from "./utils";
+import { getEntryPoint, getMonacoEntryPoints } from "./utils";
 import { srcFolder } from "./paths";
 
 const extendedConfig: Configuration = {
-  entry: [
-    require.resolve("react-dev-utils/webpackHotDevClient"),
-    getEntryPoint(srcFolder)
-  ],
+  entry: {
+    hotClient: require.resolve("react-dev-utils/webpackHotDevClient"),
+    app: getEntryPoint(srcFolder),
+    ...getMonacoEntryPoints(srcFolder)
+  },
   output: {
     publicPath: "/"
   },
