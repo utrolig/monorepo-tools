@@ -1,6 +1,6 @@
 {
   "name": "create-monorepo-app",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "main": "index.js",
   "license": "MIT",
   "repository": {
