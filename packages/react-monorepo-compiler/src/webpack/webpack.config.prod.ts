@@ -22,6 +22,7 @@ const extendedConfig: Configuration = {
   bail: true,
   output: {
     path: buildFolder,
+    publicPath: "/",
     filename: "static/js/[name].[contenthash:8].js",
     chunkFilename: "static/js/[name].[contenthash:8].js"
   },
