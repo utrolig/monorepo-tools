@@ -13,6 +13,7 @@ export const tsLintConfig = path.join(currentAppDirectory, "tslint.json");
 export const isMonorepo = fs.existsSync(
   path.join(currentAppDirectory, "../../packages")
 );
+export const monorepoRootDir = path.join(currentAppDirectory, "../../");
 
 export const eslintPluginResolutionPath = __dirname;
 

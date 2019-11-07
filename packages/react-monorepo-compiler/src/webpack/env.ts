@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { currentAppDirectory } from "./paths";
+import { currentAppDirectory, isMonorepo, monorepoRootDir } from "./paths";
+import dotenv from "dotenv";
 
 // Make sure that including paths.js after env.js will read .env variables.
 delete require.cache[require.resolve("./paths")];
@@ -12,21 +13,54 @@ if (!NODE_ENV) {
   );
 }
 
-const dotEnvPath = path.resolve(currentAppDirectory, ".env");
-if (fs.existsSync(dotEnvPath)) {
-  require("dotenv").config({ path: path.resolve(currentAppDirectory, ".env") });
-}
+const appDotEnvPath = path.resolve(currentAppDirectory, ".env");
+
+let monorepoEnvironmentVars: { [key: string]: string } = {};
+let appEnvironmentVars: { [key: string]: string } = {};
 
 // Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
 const REACT_APP = /^REACT_APP_/i;
 
+type EnvDict = {
+  [key: string]: string;
+};
+
+const getMonorepoEnvironmentVars = (): EnvDict => {
+  const monorepoEnvPath = path.resolve(monorepoRootDir, ".env");
+  if (isMonorepo && fs.existsSync(monorepoEnvPath)) {
+    try {
+      return dotenv.parse(fs.readFileSync(monorepoEnvPath));
+    } catch (err) {
+      throw new Error("Error parsing monorepo .env file");
+    }
+  }
+  return {};
+};
+
+const getApplicationEnvironmentVars = (): EnvDict => {
+  try {
+    if (fs.existsSync(appDotEnvPath)) {
+      return dotenv.parse(fs.readFileSync(appDotEnvPath));
+    }
+
+    return {};
+  } catch (err) {
+    throw new Error("Error parsing app .env file");
+  }
+};
+
 export function getClientEnvironment(publicUrl: string) {
-  const raw = Object.keys(process.env)
+  const environmentKeys = {
+    ...getMonorepoEnvironmentVars(),
+    ...getApplicationEnvironmentVars()
+  };
+
+  const raw = Object.keys(environmentKeys)
     .filter(key => REACT_APP.test(key))
     .reduce(
       (env: { [key: string]: string }, key: string) => {
-        env[key] = process.env[key] as string;
+        env[key] = environmentKeys[key] as string;
         return env;
       },
       {
