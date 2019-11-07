@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { currentAppDirectory, isMonorepo, monorepoRootDir } from "./paths";
 import dotenv from "dotenv";
+import { isProduction } from "./utils";
 
 // Make sure that including paths.js after env.js will read .env variables.
 delete require.cache[require.resolve("./paths")];
@@ -13,21 +14,19 @@ if (!NODE_ENV) {
   );
 }
 
-const appDotEnvPath = path.resolve(currentAppDirectory, ".env");
-
-let monorepoEnvironmentVars: { [key: string]: string } = {};
-let appEnvironmentVars: { [key: string]: string } = {};
-
-// Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
-// injected into the application via DefinePlugin in Webpack configuration.
-const REACT_APP = /^REACT_APP_/i;
-
 type EnvDict = {
   [key: string]: string;
 };
 
 const getMonorepoEnvironmentVars = (): EnvDict => {
-  const monorepoEnvPath = path.resolve(monorepoRootDir, ".env");
+  const monorepoEnvPath = (() => {
+    if (isProduction()) {
+      return path.resolve(monorepoRootDir, ".env.production");
+    }
+
+    return path.resolve(monorepoRootDir, ".env");
+  })();
+
   if (isMonorepo && fs.existsSync(monorepoEnvPath)) {
     try {
       return dotenv.parse(fs.readFileSync(monorepoEnvPath));
@@ -39,6 +38,12 @@ const getMonorepoEnvironmentVars = (): EnvDict => {
 };
 
 const getApplicationEnvironmentVars = (): EnvDict => {
+  const appDotEnvPath = (() => {
+    if (isProduction()) {
+      return path.resolve(currentAppDirectory, ".env.production");
+    }
+    return path.resolve(currentAppDirectory, ".env");
+  })();
   try {
     if (fs.existsSync(appDotEnvPath)) {
       return dotenv.parse(fs.readFileSync(appDotEnvPath));
@@ -55,6 +60,10 @@ export function getClientEnvironment(publicUrl: string) {
     ...getMonorepoEnvironmentVars(),
     ...getApplicationEnvironmentVars()
   };
+
+  // Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
+  // injected into the application via DefinePlugin in Webpack configuration.
+  const REACT_APP = /^REACT_APP_/i;
 
   const raw = Object.keys(environmentKeys)
     .filter(key => REACT_APP.test(key))
