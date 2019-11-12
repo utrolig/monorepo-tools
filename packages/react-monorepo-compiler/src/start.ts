@@ -3,6 +3,7 @@ import devServerOptions from "./webpack/webpack.config.devserver";
 import Webpack from "webpack";
 import webpackConfig from "./webpack/webpack.config.dev";
 import { appPkgJson } from "./paths";
+import { getClientEnvironment } from "./webpack/env";
 const {
   choosePort,
   createCompiler,
@@ -18,7 +19,8 @@ function onDevServerStart(err: any) {
 }
 
 export async function startDevServer() {
-  const defaultPort = parseInt(process.env.PORT!, 10) || 3000;
+  const environment = getClientEnvironment("/");
+  const defaultPort = parseInt(environment.raw.PORT, 10) || 3000;
   const host = `0.0.0.0`;
   const port = await choosePort(host, defaultPort);
   const devSocket = {

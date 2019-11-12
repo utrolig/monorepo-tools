@@ -64,9 +64,14 @@ export function getClientEnvironment(publicUrl: string) {
   // Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
   // injected into the application via DefinePlugin in Webpack configuration.
   const REACT_APP = /^REACT_APP_/i;
+  const removeInvalidKeys = (key: string) => {
+    if (REACT_APP.test(key)) return true;
+    if (key === "PORT") return true;
+    return false;
+  };
 
   const raw = Object.keys(environmentKeys)
-    .filter(key => REACT_APP.test(key))
+    .filter(removeInvalidKeys)
     .reduce(
       (env: { [key: string]: string }, key: string) => {
         env[key] = environmentKeys[key] as string;
