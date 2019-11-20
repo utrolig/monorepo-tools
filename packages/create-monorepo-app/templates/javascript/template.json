@@ -1,7 +1,7 @@
 {
   "name": "React",
-  "dependencies": ["react", "react-dom"],
-  "devDependencies": ["react-monorepo-compiler"],
+  "dependencies": [],
+  "devDependencies": [],
   "scripts": {
     "build": "react-monorepo-compiler build",
     "start": "react-monorepo-compiler start",
