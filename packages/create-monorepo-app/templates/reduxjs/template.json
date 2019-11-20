@@ -1,0 +1,10 @@
+{
+  "name": "React Redux",
+  "dependencies": [],
+  "devDependencies": [],
+  "scripts": {
+    "build": "react-monorepo-compiler build",
+    "start": "react-monorepo-compiler start",
+    "test": "react-monorepo-compiler test"
+  }
+}
