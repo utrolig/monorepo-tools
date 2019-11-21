@@ -1,4 +1,5 @@
 import spawn from "cross-spawn";
+import chalk from "chalk";
 
 export function runCommand(command: string, args: string[], cwd: string) {
   return new Promise((resolve, reject) => {
@@ -16,6 +17,8 @@ export function runCommand(command: string, args: string[], cwd: string) {
 }
 
 export async function installDependencies(destinationFolder: string) {
+  const deps = ["react", "react-dom", "redux", "react-redux"];
+
   const devDeps = [
     "create-monorepo-app",
     "eslint",
@@ -28,9 +31,20 @@ export async function installDependencies(destinationFolder: string) {
     "eslint-plugin-jsx-a11y@6.x",
     "eslint-plugin-react@7.x",
     "eslint-plugin-react-hooks@1.x",
-    "typescript"
+    "typescript",
+    "@types/jest",
+    "@types/react",
+    "@types/react-dom",
+    "react-monorepo-compiler"
   ];
+
   const cmd = "yarnpkg";
-  const args = ["add", "--dev", "--ignore-workspace-root-check"];
-  return await runCommand(cmd, [...args, ...devDeps], destinationFolder);
+  const args = ["add", "--ignore-workspace-root-check"];
+  const devArgs = ["add", "--dev", "--ignore-workspace-root-check"];
+
+  console.log(chalk.blue("Installing dependencies"));
+  await runCommand(cmd, [...args, ...deps], destinationFolder);
+
+  console.log(chalk.blue("Installing devDependencies"));
+  await runCommand(cmd, [...devArgs, ...devDeps], destinationFolder);
 }
