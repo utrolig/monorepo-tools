@@ -2,9 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 
-function render() {
-  const el = document.getElementById("page");
+const _render = el => {
   ReactDOM.render(<App />, el);
-}
+};
 
-render();
+window.renderReactJsApp = _render;
