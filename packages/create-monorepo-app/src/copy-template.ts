@@ -38,10 +38,26 @@ export async function installDeps(
 ) {
   const cmd = "yarnpkg";
   const args = ["add", ...dependencies.depsToInstall];
-  await runCommand(cmd, args, destinationFolder);
+
+  if (args.length > 1) {
+    await runCommand(cmd, args, destinationFolder);
+  } else {
+    console.log(
+      "dependency array empty, ",
+      chalk.yellow("no dependencies installed")
+    );
+  }
 
   const devArgs = ["add", "--dev", ...dependencies.devDepsToInstall];
-  await runCommand(cmd, devArgs, destinationFolder);
+
+  if (devArgs.length > 2) {
+    await runCommand(cmd, devArgs, destinationFolder);
+  } else {
+    console.log(
+      "devDependency array empty, ",
+      chalk.yellow("no devDpendencies installed")
+    );
+  }
 }
 
 export function copyCommonTemplate(destination: string) {
