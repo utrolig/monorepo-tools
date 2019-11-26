@@ -177,6 +177,10 @@ export const babelRule: RuleSetRule = {
         require.resolve("@babel/plugin-proposal-object-rest-spread"),
         require.resolve("@babel/plugin-transform-runtime"),
         require.resolve("@babel/plugin-syntax-dynamic-import"),
+        [
+          require.resolve("babel-plugin-styled-components"),
+          { ssr: false, displayName: !isProduction() }
+        ],
         getRemoveTestAttributesPlugin()
       ].filter(Boolean)
     }
