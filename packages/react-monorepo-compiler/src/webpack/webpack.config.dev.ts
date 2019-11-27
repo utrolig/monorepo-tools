@@ -19,7 +19,7 @@ const extendedConfig: Configuration = {
     publicPath: "/"
   },
   mode: "development",
-  devtool: "cheap-module-eval-source-map",
+  devtool: "cheap-module-source-map",
   plugins: [
     envPlugin,
     htmlWebpackPlugin,
