@@ -120,7 +120,7 @@ export const fileRule: RuleSetRule = {
   oneOf: [],
   loader: require.resolve("file-loader"),
   options: {
-    name: "static/media/[name].[hash:8].[ext]"
+    name: "assets/[name].[hash:8].[ext]"
   }
 };
 
