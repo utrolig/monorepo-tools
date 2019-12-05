@@ -14,7 +14,7 @@ export const isMonorepo = fs.existsSync(
   path.join(currentAppDirectory, "../../packages")
 );
 
-export const reactBuildArtifactsFolderName = "react-build-artifacts";
+export const reactBuildArtifactsFolderName = "assets";
 export const reactBuildArtifactsNameTemplateString = `${reactBuildArtifactsFolderName}/[name].[contenthash:8]`;
 export const monorepoRootDir = path.join(currentAppDirectory, "../../");
 
