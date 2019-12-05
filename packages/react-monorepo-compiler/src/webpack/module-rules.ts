@@ -6,7 +6,9 @@ import { isProduction } from "./utils";
 import {
   srcFolder,
   getAppEntryFile,
-  eslintPluginResolutionPath
+  eslintPluginResolutionPath,
+  reactBuildArtifactsNameTemplateString,
+  reactBuildArtifactsFolderName
 } from "./paths";
 
 export const eslintRule: RuleSetRule = {
@@ -120,7 +122,7 @@ export const fileRule: RuleSetRule = {
   oneOf: [],
   loader: require.resolve("file-loader"),
   options: {
-    name: "assets/[name].[hash:8].[ext]"
+    name: `${reactBuildArtifactsFolderName}/[name].[hash:8].[ext]`
   }
 };
 

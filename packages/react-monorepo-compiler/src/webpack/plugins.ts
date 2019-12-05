@@ -1,6 +1,11 @@
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import { templatePath, tsLintConfig, appNodeModules } from "./paths";
+import {
+  templatePath,
+  tsLintConfig,
+  appNodeModules,
+  reactBuildArtifactsNameTemplateString
+} from "./paths";
 import resolve from "resolve";
 import { isProduction, getConfigOrCreateIfNotExists } from "./utils";
 import webpack from "webpack";
@@ -19,8 +24,8 @@ export const interpolateHtmlPlugin = new InterpolateHtmlPlugin(
 );
 
 export const miniCssPlugin = new MiniCssExtractPlugin({
-  filename: "static/css/[name].[contenthash:8].css",
-  chunkFilename: "static/css/[name].[contenthash:8].chunk.css"
+  filename: `${reactBuildArtifactsNameTemplateString}.css`,
+  chunkFilename: `${reactBuildArtifactsNameTemplateString}.chunk.css`
 });
 
 export const htmlWebpackPlugin = new HtmlWebpackPlugin({

@@ -10,7 +10,11 @@ import {
 } from "./plugins";
 import TerserPlugin from "terser-webpack-plugin";
 import isWsl from "is-wsl";
-import { buildFolder, srcFolder } from "./paths";
+import {
+  buildFolder,
+  srcFolder,
+  reactBuildArtifactsNameTemplateString
+} from "./paths";
 import safePostCssParser from "postcss-safe-parser";
 import OptimizeCSSAssetsPlugin from "optimize-css-assets-webpack-plugin";
 import { getEntryPoint } from "./utils";
@@ -23,8 +27,8 @@ const extendedConfig: Configuration = {
   output: {
     path: buildFolder,
     publicPath: "/",
-    filename: "static/js/[name].[contenthash:8].js",
-    chunkFilename: "static/js/[name].[contenthash:8].js"
+    filename: `${reactBuildArtifactsNameTemplateString}.js`,
+    chunkFilename: `${reactBuildArtifactsNameTemplateString}.js`
   },
   optimization: {
     minimize: true,
