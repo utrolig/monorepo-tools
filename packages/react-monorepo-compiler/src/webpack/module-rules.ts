@@ -130,7 +130,7 @@ const getRemoveTestAttributesPlugin = () => {
   const testAttributeRemovalPlugin = [
     require.resolve("babel-plugin-jsx-remove-data-test-id"),
     {
-      attributes: ["data-test-element", "data-test-id"]
+      attributes: ["data-test-element", "data-test-id", "data-test-payload"]
     }
   ];
 
