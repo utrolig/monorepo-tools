@@ -8,9 +8,9 @@ export const isProduction = () => {
 };
 
 export const isContinousIntegration = () => {
-  const isCiEnv = process.env.CI === 'true';
+  const isCiEnv = process.env.CI === "true";
   return isCiEnv;
-}
+};
 
 export function isTypescriptApp() {
   const entryFile = getEntryPoint(srcFolder);

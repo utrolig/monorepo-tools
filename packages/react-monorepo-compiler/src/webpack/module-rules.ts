@@ -7,7 +7,6 @@ import {
   srcFolder,
   getAppEntryFile,
   eslintPluginResolutionPath,
-  reactBuildArtifactsNameTemplateString,
   reactBuildArtifactsFolderName
 } from "./paths";
 
@@ -128,9 +127,9 @@ export const fileRule: RuleSetRule = {
 
 const getRemoveTestAttributesPlugin = () => {
   const testAttributeRemovalPlugin = [
-    require.resolve("babel-plugin-jsx-remove-data-test-id"),
+    require.resolve("babel-plugin-react-remove-properties"),
     {
-      attributes: ["data-test-element", "data-test-id", "data-test-payload"]
+      properties: [/^data-test-.*$/]
     }
   ];
 
