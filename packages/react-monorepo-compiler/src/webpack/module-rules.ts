@@ -49,7 +49,7 @@ const getStyleLoader = (cssOptions: any, preProcessor?: string) => {
     if (isDevelopment) {
       return {
         loader: require.resolve("style-loader"),
-        options: { injectType: "styleTag" }
+        options: { injectType: "singletonStyleTag" }
       };
     }
 
